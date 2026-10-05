@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RoverSim</title>
+  </head>
+  <body>
+    <header class="top">
+      <div><b class="name">RoverSim</b> <a class="version" href="changelog.txt">v0.4</a></div>
+      <label>Level: <select id="level"></select></label>
+    </header>
+
+    <section class="instructions">
+      <h1 id="level-title"></h1>
+      <p id="level-text"></p>
+      <p class="note" id="level-note" hidden></p>
+      <div class="instructions-row">
+        <details>
+          <summary>Hint</summary>
+          <p id="level-hint"></p>
+        </details>
+        <button type="button" id="reset-code">Reset code</button>
+      </div>
+    </section>
+
+    <main class="work">
+      <div class="editor" id="editor"></div>
+      <div class="side">
+        <div class="sim" id="sim-box">
+          <canvas id="sim" role="img" aria-label="Simulator"></canvas>
+        </div>
+        <div class="controls">
+          <button type="button" id="run">Run</button>
+          <button type="button" id="step">Step</button>
+          <button type="button" id="stop" disabled>Stop</button>
+          <button type="button" id="reset">Reset</button>
+          <label class="speed">Speed <input type="range" id="speed" min="-2" max="2" step="1" value="0" /></label>
+          <output id="speed-out" for="speed">1x</output>
+        </div>
+        <section class="serial-box">
+          <h2>Serial Monitor</h2>
+          <div class="serial" id="serial" role="log"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      Made by BYTE Club officers at PNHS. Found a bug? Tell an officer.<br />
+      <a href="bugs.txt" id="bugs-link">Known bugs</a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

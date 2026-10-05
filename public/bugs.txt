@@ -1,0 +1,8 @@
+RoverSim known bugs
+Things that work differently from the real rover, or just wrong.
+If you find a new one, tell an officer and we'll add it here.
+
+- distanceAhead() on the real rover returns 99 when nothing is in range.
+  The simulator always sees the edge of the map, so it never returns 99.
+- forward(0) and backward(0) do nothing on the real rover, but the
+  simulator stops with an error.

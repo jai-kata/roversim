@@ -1,0 +1,191 @@
+/* Six colors, no more. See design.md. */
+:root {
+  --paper: #ffffff;
+  --ink: #000000;
+  --pencil: #6b6b6b;
+  --graph: #cfe0f1;
+  --graph-major: #9cbfe2;
+  --highlighter: #fff176;
+  --redpen: #d32f2f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font: 14px/1.4 Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+header.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.name {
+  font-size: 16px;
+}
+
+.version {
+  color: var(--pencil);
+}
+
+select,
+button {
+  font: inherit;
+}
+
+.instructions {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.instructions h1 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.instructions p {
+  margin: 0 0 8px;
+}
+
+.instructions details p {
+  margin: 8px 0 0;
+}
+
+.instructions .note {
+  color: var(--pencil);
+}
+
+.instructions-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+main.work {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 55% 45%;
+}
+
+.editor {
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--ink);
+}
+
+.side {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 28%);
+}
+
+.sim {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sim canvas {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+button {
+  padding: 4px 10px;
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.serial-box {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 8px 16px 16px;
+}
+
+.serial-box h2 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.serial {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid var(--ink);
+  font: 14px/1.4 Consolas, "Courier New", monospace;
+  white-space: pre-wrap;
+}
+
+.serial-placeholder,
+.serial-warning {
+  color: var(--pencil);
+}
+
+.serial-error {
+  color: var(--redpen);
+}
+
+footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--ink);
+}
+
+/* Narrow screens: stack everything and let the page scroll. */
+@media (max-width: 899px) {
+  html,
+  body {
+    height: auto;
+  }
+
+  main.work,
+  .side {
+    display: block;
+  }
+
+  .editor {
+    height: 50vh;
+    min-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .sim {
+    height: 360px;
+  }
+
+  .serial {
+    height: 200px;
+    flex: none;
+  }
+}

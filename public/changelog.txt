@@ -1,0 +1,10 @@
+RoverSim changelog
+
+v0.4 (2026-10-05)
+- Levels 1 to 7 plus the sandbox.
+- Some maps change every time you press Run. A level only counts as done
+  when your code works on every version of the map.
+- Your code and finished levels are saved in this browser.
+- The goal only counts if the rover stops on the X, like the real rover.
+- The sketched simulator, Run / Step / Stop / Reset, and the speed slider.
+- The C++ interpreter and all the error messages, tested first.

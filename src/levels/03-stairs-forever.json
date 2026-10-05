@@ -1,0 +1,88 @@
+{
+  "id": 3,
+  "title": "Stairs forever",
+  "concept": "loop()",
+  "instructions": "loop() runs over and over. Get to the top using 4 commands or fewer.",
+  "note": "On the real rover, loop() never stops by itself. The simulator stops when you reach the goal.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n}\n\nvoid loop() {\n  // loop() runs again and again.\n  forward(1);\n}\n",
+  "grid": {
+    "w": 8,
+    "h": 8
+  },
+  "variants": [
+    {
+      "start": {
+        "x": 1,
+        "y": 7,
+        "dir": "N"
+      },
+      "goal": {
+        "x": 6,
+        "y": 2
+      },
+      "walls": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": 4,
+  "requires": [],
+  "hint": "Put one stair in loop(): up 1, right 1, then face up again. loop() repeats it for you.",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n}\n\nvoid loop() {\n  forward(1);\n  turnRight();\n  forward(1);\n  turnLeft();\n}\n"
+}

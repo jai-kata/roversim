@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "title": "First steps",
+  "concept": "Sequence",
+  "instructions": "Code runs one line at a time, from top to bottom. Change the code so the rover drives 3 cells forward to the X.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  // setup() runs once when the rover turns on.\n  forward(1);\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 8, "h": 8 },
+  "variants": [
+    {
+      "start": { "x": 1, "y": 6, "dir": "N" },
+      "goal": { "x": 1, "y": 3 },
+      "walls": [[2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [5, 1], [6, 1], [5, 5]],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "The number inside forward( ) is how many cells to drive. Press Run, or Ctrl+Enter, to try your code.",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n  forward(3);\n}\n\nvoid loop() {\n}\n"
+}

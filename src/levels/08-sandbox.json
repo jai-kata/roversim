@@ -1,0 +1,60 @@
+{
+  "id": 8,
+  "title": "Sandbox (more levels coming)",
+  "concept": "Anything",
+  "instructions": "Free drive. No goal here, just try stuff.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  if (distanceAhead() > 0) {\n    forward(1);\n  } else {\n    turnRight();\n  }\n}\n",
+  "grid": {
+    "w": 10,
+    "h": 10
+  },
+  "variants": [
+    {
+      "start": {
+        "x": 1,
+        "y": 8,
+        "dir": "N"
+      },
+      "goal": null,
+      "walls": [
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "Try making the rover drive a shape, or print distanceAhead() with Serial.println().",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  if (distanceAhead() > 0) {\n    forward(1);\n  } else {\n    turnRight();\n  }\n}\n"
+}
