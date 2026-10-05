@@ -1,3 +1,7 @@
 node_modules
 dist
 .claude
+
+# Planning docs, kept locally only
+SPEC.md
+design.md

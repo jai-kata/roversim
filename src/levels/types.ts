@@ -3,7 +3,7 @@ import type { Cell, Pose } from '../sim/world';
 
 export type { Requirement } from '../lang/analysis';
 
-// Shape of the JSON files in this folder (see SPEC.md, "Levels").
+// Shape of the JSON files in this folder.
 export interface LevelVariant {
   start: Pose;
   goal: Cell | null;

@@ -10,7 +10,7 @@ import { tags } from '@lezer/highlight';
 import type { Diagnostic } from './lang';
 
 // Keywords bold black, numbers and strings dark blue, comments pencil.
-// That's the whole theme (design.md, "Editor").
+// That's the whole theme.
 const highlight = HighlightStyle.define([
   { tag: [tags.keyword, tags.standard(tags.typeName), tags.bool, tags.processingInstruction], fontWeight: 'bold' },
   { tag: [tags.number, tags.string], color: '#1a4d8f' },

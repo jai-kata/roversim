@@ -1,4 +1,4 @@
-/* Six colors, no more. See design.md. */
+/* Six colors, no more: paper, ink, pencil, graph paper, highlighter, red pen. */
 :root {
   --paper: #ffffff;
   --ink: #000000;
