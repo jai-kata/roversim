@@ -46,6 +46,8 @@ export class SimView {
       paper: v('--paper'), ink: v('--ink'), pencil: v('--pencil'), graph: v('--graph'),
       graphMajor: v('--graph-major'), highlighter: v('--highlighter'), redpen: v('--redpen'),
     };
+    // Size once now too: resize callbacks don't fire while a tab is hidden.
+    this.resize(box);
     new ResizeObserver(() => this.resize(box)).observe(box);
   }
 
