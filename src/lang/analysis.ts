@@ -4,7 +4,7 @@ import type { Expr, Program, Stmt } from './ast';
 
 const MOVE_COMMANDS = new Set(['forward', 'backward', 'turnLeft', 'turnRight']);
 
-export type Requirement = 'variable' | 'for' | 'while' | 'if' | 'function';
+export type Requirement = 'variable' | 'for' | 'while' | 'if' | 'function' | 'returns';
 
 export interface Usage {
   commands: number; // robot-command call sites, not executions
@@ -13,10 +13,11 @@ export interface Usage {
   if: boolean;
   variable: boolean; // a variable (not a for counter) is created and read
   function: boolean; // a function besides setup/loop is called
+  returns: boolean; // a function that gives back a value is called
 }
 
 export function analyze(program: Program): Usage {
-  const u: Usage = { commands: 0, for: false, while: false, if: false, variable: false, function: false };
+  const u: Usage = { commands: 0, for: false, while: false, if: false, variable: false, function: false, returns: false };
   const declared = new Set<string>();
   const read = new Set<string>();
   const called = new Set<string>();
@@ -95,16 +96,19 @@ export function analyze(program: Program): Usage {
   };
 
   const own = new Set<string>();
+  const giveBack = new Set<string>();
   for (const item of program.items) {
     if (item.kind === 'decl') stmt(item);
     else {
       if (item.body && item.name !== 'setup' && item.name !== 'loop') own.add(item.name);
+      if (item.body && item.returnType !== 'void') giveBack.add(item.name);
       for (const p of item.params) declared.add(p.name);
       stmt(item.body);
     }
   }
   u.variable = [...declared].some((n) => read.has(n));
   u.function = [...own].some((n) => called.has(n));
+  u.returns = [...giveBack].some((n) => called.has(n));
   return u;
 }
 

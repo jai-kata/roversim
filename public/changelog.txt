@@ -1,11 +1,17 @@
 RoverSim changelog
 
 v0.5 (2026-10-06)
-- 14 levels. Levels 8 to 14 are new and get harder as they go, up to
-  ones meant to make people who already code think.
-- Level 1's starting code now points out each part of a program:
-  #include, setup(), { }, ( ), ;, and comments.
-- The sandbox moved to the end, and code you wrote in it moved too.
+- 14 levels. Levels 1 to 7 are redone so that, together, they teach every
+  piece of C++ the later levels use: variables, ++, for, while, if /
+  else if, bool, your own functions, and functions that give back a value.
+- Levels 8 to 14 are new and get harder as they go, up to ones meant to
+  make people who already code think.
+- Level 1's starting code points out each part of a program: #include,
+  setup(), { }, ( ), ;, and comments.
+- A Commands list next to Hint shows everything you can write.
+- Levels moved around, so code and checkmarks saved for levels that changed
+  are gone. Stairs forever (now level 2) and the sandbox (now 15) kept
+  yours.
 - If the rover skips a circle, it now says which circle it still needs.
 
 v0.4 (2026-10-05)
