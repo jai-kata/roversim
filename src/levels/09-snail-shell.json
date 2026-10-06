@@ -1,0 +1,26 @@
+{
+  "id": 9,
+  "title": "Snail shell",
+  "concept": "Math in loops",
+  "instructions": "Follow the circles in order to the X using only 2 commands. Look closely at how long each side of the spiral is.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  for (int i = 0; i < 4; i++) {\n    forward(1);\n    turnRight();\n  }\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 11, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 4, "y": 4, "dir": "N" },
+      "goal": { "x": 7, "y": 7 },
+      "walls": [
+        [0, 0], [1, 0], [8, 0],
+        [9, 1],
+        [0, 4], [9, 4],
+        [10, 6],
+        [0, 8], [1, 8]
+      ],
+      "checkpoints": [{ "x": 4, "y": 3 }, { "x": 5, "y": 3 }, { "x": 5, "y": 5 }, { "x": 3, "y": 5 }, { "x": 3, "y": 2 }, { "x": 6, "y": 2 }, { "x": 6, "y": 6 }, { "x": 2, "y": 6 }, { "x": 2, "y": 1 }, { "x": 7, "y": 1 }]
+    }
+  ],
+  "maxCommands": 2,
+  "requires": [],
+  "hint": "The sides go 1, 1, 2, 2, 3, 3, and so on. You can put math inside the ( ) of a command. With int, / throws away the remainder, so 2 / 2 and 3 / 2 are both 1.",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n  for (int i = 2; i <= 12; i++) {\n    forward(i / 2);\n    turnRight();\n  }\n}\n\nvoid loop() {\n}\n"
+}

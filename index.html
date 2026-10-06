@@ -7,7 +7,7 @@
   </head>
   <body>
     <header class="top">
-      <div><b class="name">RoverSim</b> <a class="version" href="changelog.txt">v0.4</a></div>
+      <div><b class="name">RoverSim</b> <a class="version" href="changelog.txt">v0.5</a></div>
       <label>Level: <select id="level"></select></label>
     </header>
 
@@ -19,6 +19,12 @@
         <details>
           <summary>Hint</summary>
           <p id="level-hint"></p>
+        </details>
+        <details class="commands" id="commands">
+          <summary>Commands</summary>
+          <div class="commands-list" id="commands-list">
+            <p>Everything you can use in your code.</p>
+          </div>
         </details>
         <button type="button" id="reset-code">Reset code</button>
       </div>

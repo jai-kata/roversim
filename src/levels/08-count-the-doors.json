@@ -1,0 +1,50 @@
+{
+  "id": 8,
+  "title": "Count the doors",
+  "concept": "Putting it together",
+  "instructions": "The X is behind the third door on the left, and the doors move every time you press Run. Count the doors as you drive past them.",
+  "starterCode": "#include \"Rover.h\"\n\nint doors = 0;  // doors on the left so far\n\nbool leftIsOpen() {\n  turnLeft();\n  bool open = distanceAhead() > 0;\n  turnRight();\n  return open;\n}\n\nvoid setup() {\n}\n\nvoid loop() {\n  forward(1);\n}\n",
+  "grid": { "w": 13, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 0, "y": 5, "dir": "E" },
+      "goal": { "x": 9, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2], [10, 2], [11, 2], [12, 2],
+        [0, 3], [1, 3], [3, 3], [4, 3], [6, 3], [7, 3], [8, 3], [10, 3], [12, 3],
+        [0, 4], [1, 4], [3, 4], [4, 4], [6, 4], [7, 4], [8, 4], [10, 4], [12, 4],
+        [0, 6], [1, 6], [2, 6], [4, 6], [5, 6], [6, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6],
+        [0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 5, "dir": "E" },
+      "goal": { "x": 8, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2], [10, 2], [11, 2], [12, 2],
+        [0, 3], [1, 3], [2, 3], [3, 3], [5, 3], [7, 3], [9, 3], [10, 3], [11, 3], [12, 3],
+        [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [7, 4], [9, 4], [10, 4], [11, 4], [12, 4],
+        [0, 6], [2, 6], [3, 6], [4, 6], [6, 6], [7, 6], [8, 6], [9, 6], [11, 6], [12, 6],
+        [0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 5, "dir": "E" },
+      "goal": { "x": 7, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2], [10, 2], [11, 2], [12, 2],
+        [0, 3], [2, 3], [4, 3], [5, 3], [6, 3], [8, 3], [9, 3], [11, 3], [12, 3],
+        [0, 4], [2, 4], [4, 4], [5, 4], [6, 4], [8, 4], [9, 4], [11, 4], [12, 4],
+        [0, 6], [1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [7, 6], [8, 6], [10, 6], [11, 6], [12, 6],
+        [0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "Each time loop() runs, drive 1 cell and look left. When there's a door, add 1 to doors. Then if (doors == 3), turn in and drive to the X. == checks if two things are equal; a single = changes a variable.",
+  "solution": "#include \"Rover.h\"\n\nint doors = 0;\n\nbool leftIsOpen() {\n  turnLeft();\n  bool open = distanceAhead() > 0;\n  turnRight();\n  return open;\n}\n\nvoid setup() {\n}\n\nvoid loop() {\n  forward(1);\n  if (leftIsOpen()) {\n    doors++;\n    if (doors == 3) {\n      turnLeft();\n      forward(2);\n    }\n  }\n}\n"
+}

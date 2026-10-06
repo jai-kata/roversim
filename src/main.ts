@@ -4,9 +4,11 @@ import { createEditor } from './editor';
 import type { Program, RunResult } from './lang';
 import { analyze, loopIsEmpty, missingRequirements, type Requirement } from './lang/analysis';
 import { LEVELS, passesAllVariants, worldFor, type Level, type LevelVariant } from './levels';
+import { renderReference } from './reference';
 import { Runner, type RunnerState } from './runner';
 import { SerialMonitor } from './serial';
 import { SimView } from './sim/view';
+import type { World } from './sim/world';
 import { storage } from './storage';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -33,10 +35,13 @@ const REQUIREMENT_MESSAGES: Record<Requirement, string> = {
   while: 'Made it, but this level wants you to use a while loop.',
   if: 'Made it, but this level wants you to use an if.',
   function: 'Made it, but this level wants you to write and use your own function.',
+  returns: 'Made it, but this level wants you to use a function that gives back a value, like leftIsOpen().',
 };
 
+storage.migrate();
 let level: Level = LEVELS.find((l) => l.id === storage.lastLevel()) ?? LEVELS[0];
 let variant: LevelVariant = level.variants[0];
+let world: World | null = null; // the one being run, to see which circles it reached
 
 const serial = new SerialMonitor($('serial'));
 const view = new SimView(canvas, $('sim-box'));
@@ -65,7 +70,7 @@ const runner = new Runner({
     variant = level.variants[Math.floor(Math.random() * level.variants.length)];
     view.load(mapOf(variant));
   },
-  newWorld: () => worldFor(level, variant),
+  newWorld: () => (world = worldFor(level, variant)),
   onState: updateButtons,
   onFinish: showResult,
 });
@@ -100,8 +105,11 @@ function showResult(result: RunResult, program: Program): void {
       break;
     default: {
       const hasGoal = variant.goal !== null;
+      const nextCircle = world?.nextCheckpoint ?? 0;
       if (hasGoal && result.passedGoal) {
         message = "The rover drove over the X but didn't stop on it.";
+      } else if (hasGoal && nextCircle < variant.checkpoints.length) {
+        message = `The X only counts after the circles, and the rover hasn't been to circle ${nextCircle + 1}.`;
       } else if (loopIsEmpty(program)) {
         message = hasGoal ? "The code finished, but the rover didn't reach the X." : 'The code finished.';
       } else {
@@ -138,6 +146,23 @@ function fillLevelSelect(): void {
   levelSelect.value = String(level.id);
 }
 
+// After level 7 the instructions stop introducing commands, so the
+// Commands list opens by itself the first time someone gets there.
+const FIRST_HARD_LEVEL = 8;
+const commands = $<HTMLDetailsElement>('commands');
+renderReference($('commands-list'));
+document.addEventListener('click', (e) => {
+  // Picking level 8 from the menu opens the list, so that click doesn't close it.
+  const t = e.target as Node;
+  if (commands.open && !commands.contains(t) && t !== levelSelect) commands.open = false;
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && commands.open) {
+    commands.open = false;
+    commands.querySelector('summary')!.focus();
+  }
+});
+
 function loadLevel(l: Level): void {
   clearTimeout(saveTimer);
   level = l;
@@ -149,6 +174,10 @@ function loadLevel(l: Level): void {
   note.textContent = l.note ?? '';
   note.hidden = !l.note;
   $('level-hint').textContent = l.hint;
+  if (l.id >= FIRST_HARD_LEVEL && !storage.commandsShown()) {
+    storage.markCommandsShown();
+    commands.open = true;
+  }
   view.load(mapOf(variant));
   runner.reset();
   editor.load(storage.code(l.id) ?? l.starterCode);

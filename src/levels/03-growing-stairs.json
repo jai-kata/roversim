@@ -1,0 +1,30 @@
+{
+  "id": 3,
+  "title": "Growing stairs",
+  "concept": "Variables",
+  "instructions": "A variable is a name that holds a number, and you can change it while the program runs: steps++; adds 1 to steps. Each stair is one bigger than the last, so climb them all using 4 commands or fewer.",
+  "note": "steps--; takes 1 away and steps += 2; adds 2. A variable made inside loop() starts over every time loop() runs, so make it above, outside every function.",
+  "starterCode": "#include \"Rover.h\"\n\n// A variable: int means a whole number, steps is its name, 1 is its value.\n// It's made out here so it keeps its value every time loop() runs.\nint steps = 1;\n\nvoid setup() {\n  Serial.begin(9600);  // turns on the Serial Monitor\n}\n\nvoid loop() {\n  Serial.println(steps);  // shows what steps is right now\n  forward(steps);\n  turnRight();\n  forward(1);\n  turnLeft();\n}\n",
+  "grid": { "w": 10, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 1, "y": 8, "dir": "N" },
+      "goal": { "x": 7, "y": 2 },
+      "walls": [
+        [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1],
+        [3, 2], [8, 2],
+        [3, 3], [5, 3], [6, 3], [7, 3], [8, 3],
+        [1, 4], [2, 4], [3, 4], [5, 4],
+        [1, 5], [5, 5],
+        [0, 6], [1, 6], [3, 6], [4, 6], [5, 6],
+        [0, 7], [3, 7],
+        [0, 8], [2, 8], [3, 8]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": 4,
+  "requires": ["variable"],
+  "hint": "Both parts of a stair, up and across, are steps cells long. After each stair, make steps one bigger with steps++; so the next stair is bigger too. Watch the Serial Monitor to see it count.",
+  "solution": "#include \"Rover.h\"\n\nint steps = 1;\n\nvoid setup() {\n}\n\nvoid loop() {\n  forward(steps);\n  turnRight();\n  forward(steps);\n  turnLeft();\n  steps++;\n}\n"
+}
