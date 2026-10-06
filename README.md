@@ -46,21 +46,25 @@ and your own functions.
 
 ## The levels
 
-Levels 1 to 7 are for people who have never coded:
+Levels 1 to 7 are for people who have never coded. Between them they teach
+every piece of C++ the later levels need:
 
-1. **First steps**: what a command looks like, and that code runs top to
-   bottom. The starting code points out each part of a program.
-2. **Turn the corner**: turning.
-3. **Stairs forever**: `loop()` repeats, so 4 commands can climb 5 stairs.
-4. **Same number twice**: variables.
-5. **Square dance**: `for` loops.
-6. **Unknown hallway**: `while` loops and the distance sensor. The hallway
-   is a different length every time.
-7. **Left or right?**: `if` / `else`. The way out changes sides.
+1. **First steps**: what a command looks like (`;`, `( )`, `{ }`, comments),
+   driving, and turning. The starting code points out each part.
+2. **Stairs forever**: `loop()` repeats, so 4 commands can climb 5 stairs.
+3. **Growing stairs**: variables, changing them with `++`, and why they go
+   outside `loop()`. Printing to the Serial Monitor.
+4. **Spiral out**: `for` loops and math with the counter.
+5. **Halfway back**: `while` loops, the distance sensor, counting, `/` and
+   `%`, comparing, and `backward`. The hallway is a different length every
+   time.
+6. **Bumpy road**: your own functions, with a number passed in, and `const`.
+7. **Which way?**: `if` / `else if` / `else`, `bool`, functions that give
+   back a value, and looking sideways. The way out changes every time.
 
-Levels 8 to 14 get harder as they go:
+Levels 8 to 14 use all of that on harder problems:
 
-8. **Bumpy road**: your own functions, with a number passed in.
+8. **Count the doors**: count doors while driving and take the third.
 9. **Snail shell**: math inside a loop. A whole spiral in 2 commands.
 10. **Dead center**: measure a room of any size and park in the middle.
 11. **Mow the lawn**: a lawn of any size in 4 commands, remembering which
@@ -85,6 +89,8 @@ Your code and finished levels are saved in your browser.
 - **Stop** stops the run. **Reset** puts the rover back at the start.
 - **Speed** goes from 0.25x to 4x.
 - **Reset code** puts back the level's starting code. Ctrl+Z undoes it.
+- **Commands** lists everything you can write, with an example of each. It
+  opens by itself the first time you reach level 8.
 
 ## When something goes wrong
 

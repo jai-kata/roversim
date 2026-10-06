@@ -44,15 +44,29 @@ export const storage = {
     return Number.isInteger(v) && v > 0 ? v : null;
   },
   setLastLevel: (levelId: number): void => set('lastLevel', String(levelId)),
+  commandsShown: (): boolean => get('commandsShown') === '1',
+  markCommandsShown: (): void => set('commandsShown', '1'),
 
-  // v0.5 rewrote level 1 and moved the sandbox from level 8 to 15, where a
-  // new level now sits. Move saved code to match, once.
+  // v0.5 reordered levels 1-8. Saved code and checkmarks follow the levels
+  // that stayed the same; the others are different levels now, so theirs go.
   migrate(): void {
     if (get('levels') === '2') return;
-    if (get('code.8') !== null && get('code.15') === null) set('code.15', get('code.8'));
-    set('code.8', null);
-    set('code.1', null);
-    if (get('lastLevel') === '8') set('lastLevel', '15');
+    const moved: [number, number][] = [[3, 2], [8, 15]]; // v0.4 id -> v0.5 id
+    const oldDone = doneSet();
+    const code = new Map<number, string | null>();
+    for (let id = 1; id <= 8; id++) {
+      code.set(id, get(`code.${id}`));
+      set(`code.${id}`, null);
+    }
+    const done = new Set([...oldDone].filter((id) => id > 8));
+    for (const [from, to] of moved) {
+      const c = code.get(from);
+      if (c != null) set(`code.${to}`, c);
+      if (oldDone.has(from)) done.add(to);
+    }
+    set('done', JSON.stringify([...done].sort((a, b) => a - b)));
+    const last = moved.find(([from]) => String(from) === get('lastLevel'));
+    if (last) set('lastLevel', String(last[1]));
     set('levels', '2');
   },
 };

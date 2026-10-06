@@ -90,65 +90,91 @@ describe.each(LEVELS.map((l) => [`${l.id}. ${l.title}`, l] as const))('level %s'
 });
 
 describe('level rules catch shortcuts', () => {
-  it('level 3: writing every stair out is too many commands', () => {
-    const steps = Array.from({ length: 5 }, () => 'forward(1); turnRight(); forward(1); turnLeft();').join('\n');
-    const p = program(wrap(steps));
-    expect(passesAllVariants(p, level(3))).toBe(true);
-    expect(completes(level(3), wrap(steps))).toBe(false);
-  });
-
-  it('level 4: plain numbers instead of a variable', () => {
-    const src = wrap('forward(5); turnLeft(); forward(3); turnLeft(); forward(5);');
-    expect(passesAllVariants(program(src), level(4))).toBe(true);
-    expect(missingRequirements(program(src), ['variable'])).toEqual(['variable']);
-  });
-
-  it('level 5: driving the square without a loop', () => {
-    const src = wrap('forward(2); turnRight(); forward(2); turnRight(); forward(2); turnRight(); forward(2);');
-    expect(passesAllVariants(program(src), level(5))).toBe(true);
-    expect(completes(level(5), src)).toBe(false);
-  });
-
-  it('level 5: corners out of order do not count', () => {
-    const src = wrap('for (int i = 0; i < 4; i++) { turnRight(); turnRight(); turnRight(); }\nfor (int i = 0; i < 4; i++) { forward(2); turnLeft(); }');
-    expect(passesAllVariants(program(src), level(5))).toBe(false);
-  });
-
-  it('level 6: a fixed distance only works on one hallway', () => {
-    const results = level(6).variants.map((v) => runHeadless(program(wrap('forward(5);')), level(6), v).status);
-    expect(results).toContain('goal');
-    expect(results).toContain('crash');
-    expect(completes(level(6), wrap('forward(5);'))).toBe(false);
-  });
-
-  it('level 7: always turning left only works on one side', () => {
-    const src = wrap('forward(4); turnLeft(); forward(2);');
-    const results = level(7).variants.map((v) => runHeadless(program(src), level(7), v).status);
-    expect(results).toEqual(['goal', 'crash']);
-  });
-
-  it('level 1: the old answer and stopping on the X too early do not finish', () => {
-    expect(completes(level(1), wrap('forward(3);'))).toBe(false);
-    expect(completes(level(1), wrap('forward(2);'))).toBe(false);
-    expect(circlesReached(level(1), wrap('forward(2);'))).toBe(0);
-  });
-
   it('level 1: the starter code explains each part of a program', () => {
     const comments = level(1)
       .starterCode.split('\n')
       .filter((line) => line.includes('//'))
       .join('\n');
-    for (const part of ['commands', 'setup()', '{', '}', '( )', ';', 'loop()']) {
+    for (const part of ['command', 'setup()', '{', '}', '( )', ';', 'loop()']) {
       expect(comments).toContain(part);
     }
   });
 
-  it('level 8: writing every bump out is too many commands and no function', () => {
+  it('level 1: turning the wrong way crashes', () => {
+    expect(statuses(level(1), wrap('forward(4); turnLeft(); forward(4);'))).toEqual(['crash']);
+  });
+
+  it('level 2: writing every stair out is too many commands', () => {
+    const steps = Array.from({ length: 5 }, () => 'forward(1); turnRight(); forward(1); turnLeft();').join('\n');
+    const p = program(wrap(steps));
+    expect(passesAllVariants(p, level(2))).toBe(true);
+    expect(completes(level(2), wrap(steps))).toBe(false);
+  });
+
+  it('level 3: writing the stairs out uses no variable and too many commands', () => {
+    const src = wrap('forward(1); turnRight(); forward(1); turnLeft(); forward(2); turnRight(); forward(2); turnLeft(); forward(3); turnRight(); forward(3);');
+    expect(passesAllVariants(program(src), level(3))).toBe(true);
+    expect(completes(level(3), src)).toBe(false);
+  });
+
+  it('level 3: a variable made inside loop() starts over every time', () => {
+    const src = wrap('', 'int steps = 1;\nforward(steps); turnRight(); forward(steps); turnLeft(); steps++;');
+    expect(statuses(level(3), src)).toEqual(['crash']);
+  });
+
+  it('level 4: writing the spiral out is too many commands', () => {
+    const src = wrap('forward(2); turnRight(); forward(4); turnRight(); forward(6); turnRight(); forward(8);');
+    expect(passesAllVariants(program(src), level(4))).toBe(true);
+    expect(completes(level(4), src)).toBe(false);
+  });
+
+  it('level 4: counting by 2 with += works too', () => {
+    expect(completes(level(4), wrap('for (int n = 2; n <= 8; n += 2) {\n  forward(n);\n  turnRight();\n}'))).toBe(true);
+  });
+
+  it('level 5: backing up a fixed amount only fits one hallway', () => {
+    const src = wrap('while (distanceAhead() > 0) { forward(1); }\nbackward(2);');
+    expect(statuses(level(5), src)).toContain('goal');
+    expect(completes(level(5), src)).toBe(false);
+  });
+
+  it('level 5: stopping on the X before the circle does not count', () => {
+    expect(completes(level(5), wrap('forward(2);'))).toBe(false);
+    expect(circlesReached(level(5), wrap('forward(2);'))).toBe(0);
+  });
+
+  it('level 5: measuring first works too, as long as there is a while', () => {
+    expect(missingRequirements(program(wrap('int d = distanceAhead(); forward(d); backward(d / 2);')), level(5).requires)).toEqual(['while']);
+    const src = wrap('int d = distanceAhead();\nwhile (distanceAhead() > 0) { forward(1); }\nbackward(d / 2);');
+    expect(completes(level(5), src)).toBe(true);
+  });
+
+  it('level 6: writing every bump out is too many commands and no function', () => {
     const bump = (n: number) => `turnLeft(); forward(1); turnRight(); forward(${n}); turnRight(); forward(1); turnLeft();`;
     const src = wrap(`${bump(2)} forward(2); ${bump(4)} forward(2); ${bump(3)}`);
-    expect(passesAllVariants(program(src), level(8))).toBe(true);
+    expect(passesAllVariants(program(src), level(6))).toBe(true);
     expect(missingRequirements(program(src), ['function'])).toEqual(['function']);
     expect(countCommands(program(src))).toBeGreaterThan(9);
+  });
+
+  it('level 7: always turning left only works on one map', () => {
+    expect(statuses(level(7), wrap('forward(4); turnLeft(); forward(2);'))).toEqual(['goal', 'crash', 'crash']);
+  });
+
+  it('level 7: checking without a function that gives back a value', () => {
+    const src = wrap('forward(4);\nturnLeft();\nif (distanceAhead() == 0) {\n  turnRight();\n  if (distanceAhead() == 0) { turnRight(); }\n}\nforward(2);');
+    expect(passesAllVariants(program(src), level(7))).toBe(true);
+    expect(missingRequirements(program(src), level(7).requires)).toEqual(['returns']);
+  });
+
+  it('level 8: taking the first door, or a fixed route, misses the X', () => {
+    const firstDoor = level(8).starterCode.replace(
+      'void loop() {\n  forward(1);\n}',
+      'void loop() {\n  forward(1);\n  if (leftIsOpen()) { turnLeft(); forward(2); }\n}',
+    );
+    expect(firstDoor).not.toBe(level(8).starterCode);
+    expect(completes(level(8), firstDoor)).toBe(false);
+    expect(completes(level(8), wrap('forward(9); turnLeft(); forward(2);'))).toBe(false);
   });
 
   it('level 9: writing the spiral out is too many commands', () => {
@@ -259,10 +285,6 @@ void loop() {
     expect(completes(level(14), src)).toBe(true);
   });
 
-  it('level 7: the if/else version works too', () => {
-    const src = wrap('forward(4);\nturnLeft();\nif (distanceAhead() > 0) {\n  forward(2);\n} else {\n  turnRight();\n  turnRight();\n  forward(2);\n}');
-    expect(completes(level(7), src)).toBe(true);
-  });
 });
 
 describe('analysis', () => {
@@ -288,7 +310,13 @@ void setup() {
   if (legs > 1) { turnRight(); }
 }
 void loop() {}`);
-    expect(analyze(p)).toMatchObject({ for: true, while: true, if: true, variable: true, function: true });
+    expect(analyze(p)).toMatchObject({ for: true, while: true, if: true, variable: true, function: true, returns: false });
+  });
+
+  it('finds a called function that gives back a value', () => {
+    const src = 'int twice(int n) { return n * 2; }\n';
+    expect(analyze(program(src + wrap('forward(twice(1));'))).returns).toBe(true);
+    expect(analyze(program(src + wrap('forward(2);'))).returns).toBe(false);
   });
 
   it('a for counter alone is not "using a variable"', () => {
@@ -312,7 +340,7 @@ void loop() {}`);
 });
 
 describe('storage saved by v0.4', () => {
-  it('moves sandbox code to level 15 and drops the old level 1 code, once', () => {
+  it('keeps progress only for levels that stayed the same, once', () => {
     const data = new Map<string, string>();
     vi.stubGlobal('window', {
       localStorage: {
@@ -322,22 +350,21 @@ describe('storage saved by v0.4', () => {
       },
     });
     try {
-      storage.saveCode(1, 'forward(3);');
-      storage.saveCode(4, 'int legs = 5;');
-      storage.saveCode(8, 'turnLeft();');
-      storage.setLastLevel(8);
+      // v0.4: 3 was Stairs forever, 8 the sandbox, and the rest are different levels now.
+      for (let id = 1; id <= 8; id++) storage.saveCode(id, `old ${id}`);
+      for (const id of [1, 2, 3, 4]) storage.markDone(id);
+      storage.setLastLevel(3);
       storage.migrate();
-      expect(storage.code(1)).toBeNull();
-      expect(storage.code(4)).toBe('int legs = 5;');
-      expect(storage.code(8)).toBeNull();
-      expect(storage.code(15)).toBe('turnLeft();');
-      expect(storage.lastLevel()).toBe(15);
+      expect([1, 3, 4, 5, 6, 7, 8].map((id) => storage.code(id))).toEqual(Array(7).fill(null));
+      expect(storage.code(2)).toBe('old 3');
+      expect(storage.code(15)).toBe('old 8');
+      expect([1, 2, 3, 4].map((id) => storage.isDone(id))).toEqual([false, true, false, false]);
+      expect(storage.lastLevel()).toBe(2);
 
       storage.saveCode(1, 'forward(4);');
-      storage.saveCode(8, 'bump(2);');
       storage.migrate();
       expect(storage.code(1)).toBe('forward(4);');
-      expect(storage.code(8)).toBe('bump(2);');
+      expect(storage.code(2)).toBe('old 3');
     } finally {
       vi.unstubAllGlobals();
     }

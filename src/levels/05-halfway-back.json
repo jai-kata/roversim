@@ -1,0 +1,45 @@
+{
+  "id": 5,
+  "title": "Halfway back",
+  "concept": "while loops",
+  "instructions": "The hallway is a different length every time you press Run. Drive to the circle at the end, then back up to the X, which is exactly halfway back.",
+  "note": "If you get stuck, Serial.println(steps); shows what your variable holds.",
+  "starterCode": "#include \"Rover.h\"\n\nint steps = 0;  // how many cells the rover has driven\n\nvoid setup() {\n  // distanceAhead() is how many empty cells are in front of the rover.\n  // A while loop repeats its { } as long as its ( ) is true.\n  // Compare with > < >= <= == (equal) and != (not equal).\n  while (distanceAhead() > 0) {\n    forward(1);\n  }\n  // backward(2); drives 2 cells backward.\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 11, "h": 7 },
+  "variants": [
+    {
+      "start": { "x": 1, "y": 3, "dir": "E" },
+      "goal": { "x": 3, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2],
+        [0, 3], [6, 3],
+        [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4]
+      ],
+      "checkpoints": [{ "x": 5, "y": 3 }]
+    },
+    {
+      "start": { "x": 1, "y": 3, "dir": "E" },
+      "goal": { "x": 4, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2],
+        [0, 3], [8, 3],
+        [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4]
+      ],
+      "checkpoints": [{ "x": 7, "y": 3 }]
+    },
+    {
+      "start": { "x": 1, "y": 3, "dir": "E" },
+      "goal": { "x": 5, "y": 3 },
+      "walls": [
+        [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2], [10, 2],
+        [0, 3], [10, 3],
+        [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4]
+      ],
+      "checkpoints": [{ "x": 9, "y": 3 }]
+    }
+  ],
+  "maxCommands": null,
+  "requires": ["while"],
+  "hint": "Add 1 to steps each time the while loop drives a cell, then back up steps / 2. With whole numbers, / throws away any remainder (7 / 2 is 3), and % gives just the remainder (7 % 2 is 1).",
+  "solution": "#include \"Rover.h\"\n\nint steps = 0;\n\nvoid setup() {\n  while (distanceAhead() > 0) {\n    forward(1);\n    steps++;\n  }\n  backward(steps / 2);\n}\n\nvoid loop() {\n}\n"
+}
