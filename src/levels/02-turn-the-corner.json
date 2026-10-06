@@ -3,7 +3,7 @@
   "title": "Turn the corner",
   "concept": "Turns",
   "instructions": "turnLeft() and turnRight() spin the rover a quarter turn without moving it. Drive up, turn, and drive to the X.",
-  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  forward(4);\n  // Now turn, then keep going.\n}\n\nvoid loop() {\n}\n",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  forward(4);\n  // Now turn, then keep going.\n  // Turns don't need a number, so their ( ) stay empty: turnLeft();\n}\n\nvoid loop() {\n}\n",
   "grid": {
     "w": 8,
     "h": 8

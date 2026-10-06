@@ -44,4 +44,15 @@ export const storage = {
     return Number.isInteger(v) && v > 0 ? v : null;
   },
   setLastLevel: (levelId: number): void => set('lastLevel', String(levelId)),
+
+  // v0.5 rewrote level 1 and moved the sandbox from level 8 to 15, where a
+  // new level now sits. Move saved code to match, once.
+  migrate(): void {
+    if (get('levels') === '2') return;
+    if (get('code.8') !== null && get('code.15') === null) set('code.15', get('code.8'));
+    set('code.8', null);
+    set('code.1', null);
+    if (get('lastLevel') === '8') set('lastLevel', '15');
+    set('levels', '2');
+  },
 };

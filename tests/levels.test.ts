@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { compile, type Program } from '../src/lang';
 import { analyze, countCommands, loopIsEmpty, missingRequirements } from '../src/lang/analysis';
 import { LEVELS, passesAllVariants, runHeadless, worldFor, type Level } from '../src/levels';
+import { runProgram } from '../src/lang';
 import { storage } from '../src/storage';
 
 function program(src: string): Program {
@@ -24,10 +25,25 @@ function completes(l: Level, src: string): boolean {
 
 const wrap = (setup: string, loop = '') => `void setup() {\n${setup}\n}\nvoid loop() {\n${loop}\n}\n`;
 
-it('has the 8 MVP levels in order', () => {
-  expect(LEVELS.map((l) => l.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
-  expect(LEVELS[7].title).toBe('Sandbox (more levels coming)');
+it('has 14 levels and then the sandbox, in order', () => {
+  expect(LEVELS.map((l) => l.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+  expect(LEVELS[14].title).toBe('Sandbox');
 });
+
+// Status on each version of the map.
+const statuses = (l: Level, src: string) => l.variants.map((v) => runHeadless(program(src), l, v).status);
+
+// Index of the next circle the rover needed when the run ended.
+function circlesReached(l: Level, src: string): number {
+  const w = worldFor(l, l.variants[0]);
+  const gen = runProgram(program(src), w, { maxTotalStatements: 200000 });
+  while (!gen.next().done);
+  return w.nextCheckpoint;
+}
+
+const RIGHT_HAND = wrap('', 'turnRight();\nwhile (distanceAhead() == 0) { turnLeft(); }\nforward(1);');
+const LEFT_HAND = wrap('', 'turnLeft();\nwhile (distanceAhead() == 0) { turnRight(); }\nforward(1);');
+const BOUNCE = wrap('', 'if (distanceAhead() > 0) { forward(1); } else { turnRight(); }');
 
 describe.each(LEVELS.map((l) => [`${l.id}. ${l.title}`, l] as const))('level %s', (_, l) => {
   it('starter code compiles', () => {
@@ -111,6 +127,138 @@ describe('level rules catch shortcuts', () => {
     expect(results).toEqual(['goal', 'crash']);
   });
 
+  it('level 1: the old answer and stopping on the X too early do not finish', () => {
+    expect(completes(level(1), wrap('forward(3);'))).toBe(false);
+    expect(completes(level(1), wrap('forward(2);'))).toBe(false);
+    expect(circlesReached(level(1), wrap('forward(2);'))).toBe(0);
+  });
+
+  it('level 1: the starter code explains each part of a program', () => {
+    const comments = level(1)
+      .starterCode.split('\n')
+      .filter((line) => line.includes('//'))
+      .join('\n');
+    for (const part of ['commands', 'setup()', '{', '}', '( )', ';', 'loop()']) {
+      expect(comments).toContain(part);
+    }
+  });
+
+  it('level 8: writing every bump out is too many commands and no function', () => {
+    const bump = (n: number) => `turnLeft(); forward(1); turnRight(); forward(${n}); turnRight(); forward(1); turnLeft();`;
+    const src = wrap(`${bump(2)} forward(2); ${bump(4)} forward(2); ${bump(3)}`);
+    expect(passesAllVariants(program(src), level(8))).toBe(true);
+    expect(missingRequirements(program(src), ['function'])).toEqual(['function']);
+    expect(countCommands(program(src))).toBeGreaterThan(9);
+  });
+
+  it('level 9: writing the spiral out is too many commands', () => {
+    const sides = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6].map((n) => `forward(${n}); turnRight();`).join('\n');
+    expect(passesAllVariants(program(wrap(sides)), level(9))).toBe(true);
+    expect(completes(level(9), wrap(sides))).toBe(false);
+  });
+
+  it('level 9: nested loops work too', () => {
+    const src = wrap('for (int n = 1; n <= 6; n++) {\n  for (int k = 0; k < 2; k++) {\n    forward(n);\n    turnRight();\n  }\n}');
+    expect(completes(level(9), src)).toBe(true);
+  });
+
+  it('level 10: forgetting that the rover can already be in the middle', () => {
+    const src = wrap(`
+int up = distanceAhead();
+turnRight(); turnRight();
+int down = distanceAhead();
+int rows = (down - up) / 2;
+if (rows > 0) { forward(rows); } else { backward(-rows); }
+turnRight();
+int left = distanceAhead();
+turnRight(); turnRight();
+int right = distanceAhead();
+int cols = (right - left) / 2;
+if (cols > 0) { forward(cols); } else { backward(-cols); }`);
+    expect(statuses(level(10), src)).toContain('error');
+    expect(statuses(level(10), src)).toContain('goal');
+  });
+
+  it('level 10: driving to a wall and back half the room works too', () => {
+    const half = 'if (distanceAhead() > 0) { forward(distanceAhead()); }\nturnRight(); turnRight();\nforward(distanceAhead() / 2);';
+    expect(completes(level(10), wrap(`${half}\nturnRight();\n${half}`))).toBe(true);
+  });
+
+  it('level 11: driving around the edge misses the circles', () => {
+    expect(statuses(level(11), BOUNCE).every((s) => s !== 'goal')).toBe(true);
+  });
+
+  it('level 11: the plain if/else version works but uses too many commands', () => {
+    const src =
+      'bool up = true;\n' +
+      wrap('', 'while (distanceAhead() > 0) { forward(1); }\nif (up) { turnRight(); forward(1); turnRight(); } else { turnLeft(); forward(1); turnLeft(); }\nup = !up;');
+    expect(passesAllVariants(program(src), level(11))).toBe(true);
+    expect(completes(level(11), src)).toBe(false);
+  });
+
+  it('level 11: three right turns instead of a left fits in 4 commands', () => {
+    const src =
+      'int turns = 1;\n' +
+      wrap('', 'while (distanceAhead() > 0) { forward(1); }\nfor (int i = 0; i < turns; i++) { turnRight(); }\nforward(1);\nfor (int i = 0; i < turns; i++) { turnRight(); }\nturns = 4 - turns;');
+    expect(completes(level(11), src)).toBe(true);
+  });
+
+  it('level 12: turning right at every wall gets lost', () => {
+    expect(completes(level(12), BOUNCE)).toBe(false);
+  });
+
+  it('level 12: the left-hand rule works too', () => {
+    expect(completes(level(12), LEFT_HAND)).toBe(true);
+  });
+
+  it('level 13: maze code never finds the X out in the open', () => {
+    expect(statuses(level(13), RIGHT_HAND).every((s) => s !== 'goal')).toBe(true);
+    expect(statuses(level(13), LEFT_HAND).every((s) => s !== 'goal')).toBe(true);
+  });
+
+  it('level 13: one fixed route only fits one map', () => {
+    const src = wrap('forward(1); turnLeft(); forward(5); turnRight(); forward(7); turnRight(); forward(4);');
+    expect(statuses(level(13), src)).toContain('crash');
+    expect(completes(level(13), src)).toBe(false);
+  });
+
+  it('level 14: following the wall the whole way misses the X', () => {
+    expect(completes(level(14), RIGHT_HAND)).toBe(false);
+    expect(completes(level(14), LEFT_HAND)).toBe(false);
+  });
+
+  it('level 14: heading straight for the X gets stuck', () => {
+    const greedy = (first: string, second: string) => `
+int x = 0;
+int y = 0;
+int dir = 0;
+void face(int d) { while (dir != d) { turnRight(); dir = (dir + 1) % 4; } }
+void step() { forward(1); if (dir == 0) y++; if (dir == 1) x++; if (dir == 2) y--; if (dir == 3) x--; }
+bool open(int d) { face(d); return distanceAhead() > 0; }
+void setup() {}
+void loop() {
+  bool moved = false;
+  if (!moved && ${first}) { step(); moved = true; }
+  if (!moved && ${second}) { step(); moved = true; }
+  if (!moved) { turnRight(); dir = (dir + 1) % 4; if (distanceAhead() > 0) { step(); } }
+}`;
+    const right = 'x < 8 && open(1)';
+    const up = 'y < 5 && open(0)';
+    expect(completes(level(14), greedy(right, up))).toBe(false);
+    expect(completes(level(14), greedy(up, right))).toBe(false);
+  });
+
+  it('level 14: following the wall with the left hand works too', () => {
+    const swap = (src: string, from: string, to: string) => {
+      expect(src).toContain(from);
+      return src.replace(from, to);
+    };
+    let src = level(14).solution;
+    src = swap(src, 'while (distanceAhead() == 0) {\n    left();\n  }\n  step();', 'while (distanceAhead() == 0) {\n    right();\n  }\n  step();');
+    src = swap(src, 'right();\n      while (distanceAhead() == 0) {\n        left();', 'left();\n      while (distanceAhead() == 0) {\n        right();');
+    expect(completes(level(14), src)).toBe(true);
+  });
+
   it('level 7: the if/else version works too', () => {
     const src = wrap('forward(4);\nturnLeft();\nif (distanceAhead() > 0) {\n  forward(2);\n} else {\n  turnRight();\n  turnRight();\n  forward(2);\n}');
     expect(completes(level(7), src)).toBe(true);
@@ -160,6 +308,39 @@ void loop() {}`);
     expect(loopIsEmpty(program('void setup() {}\nvoid loop() {\n}'))).toBe(true);
     expect(loopIsEmpty(program('void setup() {}\nvoid loop() { ; }'))).toBe(true);
     expect(loopIsEmpty(program('void setup() {}\nvoid loop() { turnLeft(); }'))).toBe(false);
+  });
+});
+
+describe('storage saved by v0.4', () => {
+  it('moves sandbox code to level 15 and drops the old level 1 code, once', () => {
+    const data = new Map<string, string>();
+    vi.stubGlobal('window', {
+      localStorage: {
+        getItem: (k: string) => data.get(k) ?? null,
+        setItem: (k: string, v: string) => data.set(k, v),
+        removeItem: (k: string) => data.delete(k),
+      },
+    });
+    try {
+      storage.saveCode(1, 'forward(3);');
+      storage.saveCode(4, 'int legs = 5;');
+      storage.saveCode(8, 'turnLeft();');
+      storage.setLastLevel(8);
+      storage.migrate();
+      expect(storage.code(1)).toBeNull();
+      expect(storage.code(4)).toBe('int legs = 5;');
+      expect(storage.code(8)).toBeNull();
+      expect(storage.code(15)).toBe('turnLeft();');
+      expect(storage.lastLevel()).toBe(15);
+
+      storage.saveCode(1, 'forward(4);');
+      storage.saveCode(8, 'bump(2);');
+      storage.migrate();
+      expect(storage.code(1)).toBe('forward(4);');
+      expect(storage.code(8)).toBe('bump(2);');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
 

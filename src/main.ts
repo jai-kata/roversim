@@ -7,6 +7,7 @@ import { LEVELS, passesAllVariants, worldFor, type Level, type LevelVariant } fr
 import { Runner, type RunnerState } from './runner';
 import { SerialMonitor } from './serial';
 import { SimView } from './sim/view';
+import type { World } from './sim/world';
 import { storage } from './storage';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -35,8 +36,10 @@ const REQUIREMENT_MESSAGES: Record<Requirement, string> = {
   function: 'Made it, but this level wants you to write and use your own function.',
 };
 
+storage.migrate();
 let level: Level = LEVELS.find((l) => l.id === storage.lastLevel()) ?? LEVELS[0];
 let variant: LevelVariant = level.variants[0];
+let world: World | null = null; // the one being run, to see which circles it reached
 
 const serial = new SerialMonitor($('serial'));
 const view = new SimView(canvas, $('sim-box'));
@@ -65,7 +68,7 @@ const runner = new Runner({
     variant = level.variants[Math.floor(Math.random() * level.variants.length)];
     view.load(mapOf(variant));
   },
-  newWorld: () => worldFor(level, variant),
+  newWorld: () => (world = worldFor(level, variant)),
   onState: updateButtons,
   onFinish: showResult,
 });
@@ -100,8 +103,11 @@ function showResult(result: RunResult, program: Program): void {
       break;
     default: {
       const hasGoal = variant.goal !== null;
+      const nextCircle = world?.nextCheckpoint ?? 0;
       if (hasGoal && result.passedGoal) {
         message = "The rover drove over the X but didn't stop on it.";
+      } else if (hasGoal && nextCircle < variant.checkpoints.length) {
+        message = `The X only counts after the circles, and the rover hasn't been to circle ${nextCircle + 1}.`;
       } else if (loopIsEmpty(program)) {
         message = hasGoal ? "The code finished, but the rover didn't reach the X." : 'The code finished.';
       } else {
