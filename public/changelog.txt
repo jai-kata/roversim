@@ -1,5 +1,13 @@
 RoverSim changelog
 
+v0.5 (2026-10-06)
+- 14 levels. Levels 8 to 14 are new and get harder as they go, up to
+  ones meant to make people who already code think.
+- Level 1's starting code now points out each part of a program:
+  #include, setup(), { }, ( ), ;, and comments.
+- The sandbox moved to the end, and code you wrote in it moved too.
+- If the rover skips a circle, it now says which circle it still needs.
+
 v0.4 (2026-10-05)
 - Levels 1 to 7 plus the sandbox.
 - Some maps change every time you press Run. A level only counts as done

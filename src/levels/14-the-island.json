@@ -1,0 +1,56 @@
+{
+  "id": 14,
+  "title": "The island",
+  "concept": "Everything",
+  "instructions": "The X is always 8 cells right and 5 cells up from where you start, but the walls in between change every time. Get there on every map.",
+  "note": "The last level. It's meant to be hard.",
+  "starterCode": "#include \"Rover.h\"\n\n// Where the X is, counting from the start.\nconst int GOAL_X = 8;  // cells right\nconst int GOAL_Y = 5;  // cells up\n\nint x = 0;\nint y = 0;\n\nvoid setup() {\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 13, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 8, "y": 3 },
+      "walls": [
+        [6, 2], [10, 2],
+        [6, 3], [10, 3],
+        [6, 4], [7, 4], [8, 4], [9, 4], [10, 4]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 8, "y": 3 },
+      "walls": [
+        [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4],
+        [9, 5],
+        [9, 6],
+        [9, 7],
+        [9, 8]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 8, "y": 3 },
+      "walls": [
+        [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [10, 5], [12, 5]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 8, "y": 3 },
+      "walls": [
+        [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4],
+        [6, 5],
+        [6, 6],
+        [6, 7]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "Keep track of x, y, and which way the rover faces. Head toward the X while you can. When a wall blocks you, follow it like in the maze until you're closer to the X than where you got stuck and the way toward the X is open.",
+  "solution": "#include \"Rover.h\"\n\n// Where the X is, counting from the start.\nconst int GOAL_X = 8;  // cells right\nconst int GOAL_Y = 5;  // cells up\n\nint x = 0;\nint y = 0;\nint dir = 0;  // 0 up, 1 right, 2 down, 3 left\n\nvoid right() {\n  turnRight();\n  dir = (dir + 1) % 4;\n}\n\nvoid left() {\n  turnLeft();\n  dir = (dir + 3) % 4;\n}\n\nvoid face(int d) {\n  if ((dir + 3) % 4 == d) {\n    left();\n  }\n  while (dir != d) {\n    right();\n  }\n}\n\nvoid step() {\n  forward(1);\n  if (dir == 0) y++;\n  if (dir == 1) x++;\n  if (dir == 2) y--;\n  if (dir == 3) x--;\n}\n\nint size(int n) {\n  if (n < 0) {\n    return -n;\n  }\n  return n;\n}\n\nint distance() {\n  return size(GOAL_X - x) + size(GOAL_Y - y);\n}\n\n// Face a way that gets closer to the X and is open. false if there isn't one.\nbool faceTowardGoal() {\n  if (x < GOAL_X) {\n    face(1);\n    if (distanceAhead() > 0) return true;\n  }\n  if (x > GOAL_X) {\n    face(3);\n    if (distanceAhead() > 0) return true;\n  }\n  if (y < GOAL_Y) {\n    face(0);\n    if (distanceAhead() > 0) return true;\n  }\n  if (y > GOAL_Y) {\n    face(2);\n    if (distanceAhead() > 0) return true;\n  }\n  return false;\n}\n\n// Blocked: keep the wall on the right until we're closer than here\n// and the way toward the X is open.\nvoid followWall() {\n  int stuck = distance();\n  while (distanceAhead() == 0) {\n    left();\n  }\n  step();\n  bool following = true;\n  while (following) {\n    int heading = dir;\n    if (distance() < stuck && faceTowardGoal()) {\n      following = false;\n    } else {\n      face(heading);\n      right();\n      while (distanceAhead() == 0) {\n        left();\n      }\n      step();\n    }\n  }\n}\n\nvoid setup() {\n}\n\nvoid loop() {\n  if (faceTowardGoal()) {\n    step();\n  } else {\n    followWall();\n  }\n}\n"
+}

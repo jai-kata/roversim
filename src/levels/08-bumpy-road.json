@@ -1,0 +1,26 @@
+{
+  "id": 8,
+  "title": "Bumpy road",
+  "concept": "Functions",
+  "instructions": "A function gives a name to a group of commands, so you can use them again like a new command. Finish bump(), then use it to drive the whole road in 9 commands or fewer.",
+  "note": "void means the function does something but doesn't give back a number.",
+  "starterCode": "#include \"Rover.h\"\n\n// This makes a new command called bump.\n// size is a number you hand it each time you use it, like bump(2).\nvoid bump(int size) {\n  turnLeft();\n  forward(1);\n  turnRight();\n  forward(size);\n  // Finish the bump so the rover ends up back on the road, facing right.\n}\n\nvoid setup() {\n  bump(2);\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 14, "h": 6 },
+  "variants": [
+    {
+      "start": { "x": 0, "y": 3, "dir": "E" },
+      "goal": { "x": 13, "y": 3 },
+      "walls": [
+        [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1],
+        [3, 2], [9, 2],
+        [1, 3], [5, 3], [6, 3], [7, 3], [11, 3], [12, 3],
+        [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": 9,
+  "requires": ["function"],
+  "hint": "A bump goes up 1, over the top, down 1, and then turns to face along the road again. The flat parts between bumps are 2 cells long. Commands inside bump() count once, no matter how many times you use it.",
+  "solution": "#include \"Rover.h\"\n\nvoid bump(int size) {\n  turnLeft();\n  forward(1);\n  turnRight();\n  forward(size);\n  turnRight();\n  forward(1);\n  turnLeft();\n}\n\nvoid setup() {\n  bump(2);\n  forward(2);\n  bump(4);\n  forward(2);\n  bump(3);\n}\n\nvoid loop() {\n}\n"
+}

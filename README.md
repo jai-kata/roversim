@@ -8,8 +8,9 @@ sheet of graph paper on the right. The same code is meant to run on the
 BYTE Club's real Arduino rovers. The `Rover.h` library for that is coming
 soon.
 
-It's made for people who have never programmed before. Nothing to install
-and no account needed. It's built for Chrome and Edge, including on school
+The first levels are made for people who have never programmed before. The
+later ones get hard enough to make people who already code think. Nothing
+to install and no account needed. It's built for Chrome and Edge, including on school
 laptops.
 
 ## How it works
@@ -45,7 +46,10 @@ and your own functions.
 
 ## The levels
 
-1. **First steps**: code runs top to bottom.
+Levels 1 to 7 are for people who have never coded:
+
+1. **First steps**: what a command looks like, and that code runs top to
+   bottom. The starting code points out each part of a program.
 2. **Turn the corner**: turning.
 3. **Stairs forever**: `loop()` repeats, so 4 commands can climb 5 stairs.
 4. **Same number twice**: variables.
@@ -53,7 +57,19 @@ and your own functions.
 6. **Unknown hallway**: `while` loops and the distance sensor. The hallway
    is a different length every time.
 7. **Left or right?**: `if` / `else`. The way out changes sides.
-8. **Sandbox**: no goal, just try stuff.
+
+Levels 8 to 14 get harder as they go:
+
+8. **Bumpy road**: your own functions, with a number passed in.
+9. **Snail shell**: math inside a loop. A whole spiral in 2 commands.
+10. **Dead center**: measure a room of any size and park in the middle.
+11. **Mow the lawn**: a lawn of any size in 4 commands, remembering which
+    way you're going.
+12. **Maze runner**: one piece of code that gets through any maze.
+13. **Treasure map**: keep track of where the rover is to find the X.
+14. **The island**: everything at once. Hard on purpose.
+
+15. **Sandbox**: no goal, just try stuff.
 
 Some levels change the map every time you press Run. A level only counts
 as done when your code works on every version of the map, because the real
