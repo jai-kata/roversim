@@ -49,6 +49,7 @@ button {
 }
 
 .instructions {
+  position: relative;
   padding: 8px 16px;
   border-bottom: 1px solid var(--ink);
 }
@@ -64,6 +65,45 @@ button {
 
 .instructions details p {
   margin: 8px 0 0;
+}
+
+/* Opens over the editor instead of pushing it down, lined up with the
+   instructions so it never runs off the side of a phone. */
+.commands-list {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 16px;
+  width: min(560px, calc(100% - 32px));
+  max-height: 60vh;
+  overflow: auto;
+  margin-top: -1px;
+  padding: 0 16px 8px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.commands-list h2 {
+  font-size: 14px;
+  margin: 16px 0 4px;
+}
+
+.commands-list dl {
+  margin: 0;
+}
+
+.commands-list dt {
+  margin-top: 8px;
+}
+
+.commands-list code {
+  font: 13px/1.4 Consolas, "Courier New", monospace;
+  white-space: pre;
+}
+
+.commands-list dd {
+  margin: 2px 0 0 16px;
+  color: var(--pencil);
 }
 
 .instructions .note {

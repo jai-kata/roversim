@@ -1,0 +1,56 @@
+{
+  "id": 7,
+  "title": "Which way?",
+  "concept": "if / else",
+  "instructions": "The way out is left, right, or straight ahead, and it changes every time you press Run. leftIsOpen() checks the left side for you, so write a rightIsOpen() like it and choose the way with if and else if.",
+  "note": "! means not, && means and, || means or. So if (!leftIsOpen()) runs when the left is blocked.",
+  "starterCode": "#include \"Rover.h\"\n\n// bool means true or false. This function gives back (returns) a bool:\n// true when the left side is open. It turns to look, then turns back.\nbool leftIsOpen() {\n  turnLeft();\n  bool open = distanceAhead() > 0;\n  turnRight();\n  return open;\n}\n\nvoid setup() {\n  forward(4);\n  // if (something is true) { ... } else if (something else) { ... } else { ... }\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 9, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 4, "y": 8, "dir": "N" },
+      "goal": { "x": 2, "y": 4 },
+      "walls": [
+        [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
+        [1, 4], [5, 4],
+        [1, 5], [2, 5], [3, 5], [5, 5],
+        [3, 6], [5, 6],
+        [3, 7], [5, 7],
+        [3, 8], [5, 8]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 4, "y": 8, "dir": "N" },
+      "goal": { "x": 6, "y": 4 },
+      "walls": [
+        [3, 3], [4, 3], [5, 3], [6, 3], [7, 3],
+        [3, 4], [7, 4],
+        [3, 5], [5, 5], [6, 5], [7, 5],
+        [3, 6], [5, 6],
+        [3, 7], [5, 7],
+        [3, 8], [5, 8]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 4, "y": 8, "dir": "N" },
+      "goal": { "x": 4, "y": 2 },
+      "walls": [
+        [3, 1], [4, 1], [5, 1],
+        [3, 2], [5, 2],
+        [3, 3], [5, 3],
+        [3, 4], [5, 4],
+        [3, 5], [5, 5],
+        [3, 6], [5, 6],
+        [3, 7], [5, 7],
+        [3, 8], [5, 8]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": ["if", "returns"],
+  "hint": "Check the left first, then the right with else if. If neither side is open, the way out is straight ahead, so you don't need to turn. Every way out is 2 cells long.",
+  "solution": "#include \"Rover.h\"\n\nbool leftIsOpen() {\n  turnLeft();\n  bool open = distanceAhead() > 0;\n  turnRight();\n  return open;\n}\n\nbool rightIsOpen() {\n  turnRight();\n  bool open = distanceAhead() > 0;\n  turnLeft();\n  return open;\n}\n\nvoid setup() {\n  forward(4);\n  if (leftIsOpen()) {\n    turnLeft();\n  } else if (rightIsOpen()) {\n    turnRight();\n  }\n  forward(2);\n}\n\nvoid loop() {\n}\n"
+}

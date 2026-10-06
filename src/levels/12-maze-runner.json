@@ -1,0 +1,62 @@
+{
+  "id": 12,
+  "title": "Maze runner",
+  "concept": "Algorithms",
+  "instructions": "The maze is different every time you press Run. Write code that can find its way through any maze to the X.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n}\n\nvoid loop() {\n  if (distanceAhead() > 0) {\n    forward(1);\n  } else {\n    turnRight();\n  }\n}\n",
+  "grid": { "w": 13, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 12, "y": 0 },
+      "walls": [
+        [3, 0],
+        [1, 1], [3, 1], [5, 1], [6, 1], [7, 1], [9, 1], [10, 1], [11, 1], [12, 1],
+        [1, 2], [3, 2], [5, 2], [7, 2],
+        [1, 3], [3, 3], [5, 3], [7, 3], [8, 3], [9, 3], [10, 3], [11, 3],
+        [1, 4], [7, 4],
+        [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [9, 5], [10, 5], [11, 5],
+        [3, 6], [7, 6], [11, 6],
+        [1, 7], [3, 7], [5, 7], [7, 7], [8, 7], [9, 7], [11, 7],
+        [1, 8], [5, 8], [11, 8]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 12, "y": 8 },
+      "walls": [
+        [11, 0],
+        [1, 1], [2, 1], [3, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [11, 1],
+        [3, 2], [9, 2],
+        [0, 3], [1, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [9, 3], [10, 3], [11, 3], [12, 3],
+        [7, 4],
+        [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [7, 5], [8, 5], [9, 5], [10, 5], [11, 5],
+        [5, 6], [9, 6],
+        [1, 7], [2, 7], [3, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [11, 7],
+        [1, 8], [11, 8]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 0, "y": 8, "dir": "N" },
+      "goal": { "x": 6, "y": 4 },
+      "walls": [
+        [1, 0], [7, 0],
+        [1, 1], [3, 1], [4, 1], [5, 1], [7, 1], [9, 1], [11, 1],
+        [3, 2], [7, 2], [9, 2], [11, 2],
+        [1, 3], [2, 3], [3, 3], [5, 3], [6, 3], [7, 3], [9, 3], [11, 3], [12, 3],
+        [3, 4], [9, 4],
+        [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [9, 5], [10, 5], [11, 5],
+        [3, 6], [7, 6], [9, 6],
+        [1, 7], [3, 7], [5, 7], [7, 7], [8, 7], [9, 7], [11, 7],
+        [1, 8], [5, 8], [11, 8]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "Picture walking through the maze with your right hand always touching the wall. To feel what's on your right, turn right and check distanceAhead().",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n}\n\n// Keep the wall on the right: try right first, then straight, then left.\nvoid loop() {\n  turnRight();\n  while (distanceAhead() == 0) {\n    turnLeft();\n  }\n  forward(1);\n}\n"
+}

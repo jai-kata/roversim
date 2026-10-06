@@ -1,0 +1,50 @@
+{
+  "id": 13,
+  "title": "Treasure map",
+  "concept": "Tracking position",
+  "instructions": "The X is always 3 cells right and 7 cells up from where you start, but the gaps in the walls move every time. Keep track of where the rover is so you know which way the X is.",
+  "starterCode": "#include \"Rover.h\"\n\nint x = 0;  // how many cells right of the start the rover is\n\nvoid setup() {\n  forward(1);\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 13, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 6, "y": 8, "dir": "N" },
+      "goal": { "x": 9, "y": 1 },
+      "walls": [
+        [0, 3], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 3], [12, 3],
+        [0, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 6, "y": 8, "dir": "N" },
+      "goal": { "x": 9, "y": 1 },
+      "walls": [
+        [0, 3], [1, 3], [2, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 3], [11, 3], [12, 3],
+        [0, 6], [1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6], [12, 6]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 6, "y": 8, "dir": "N" },
+      "goal": { "x": 9, "y": 1 },
+      "walls": [
+        [0, 3], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [10, 3], [11, 3], [12, 3],
+        [0, 6], [1, 6], [2, 6], [3, 6], [4, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6]
+      ],
+      "checkpoints": []
+    },
+    {
+      "start": { "x": 6, "y": 8, "dir": "N" },
+      "goal": { "x": 9, "y": 1 },
+      "walls": [
+        [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 3], [11, 3], [12, 3],
+        [0, 6], [1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [9, 6], [10, 6], [11, 6], [12, 6]
+      ],
+      "checkpoints": []
+    }
+  ],
+  "maxCommands": null,
+  "requires": [],
+  "hint": "Add 1 to x every time you drive a cell to the right, and take 1 away for each cell to the left. To find a gap, drive along the wall and look up after every cell. Once you're through both walls, 3 - x says how far right the X still is.",
+  "solution": "#include \"Rover.h\"\n\nint x = 0;  // cells right of the start (left is negative)\n\n// Facing a wall: go to its left end, then right until the way up is open.\nvoid findGap() {\n  turnLeft();\n  while (distanceAhead() > 0) {\n    forward(1);\n    x--;\n  }\n  turnRight();\n  while (distanceAhead() == 0) {\n    turnRight();\n    forward(1);\n    x++;\n    turnLeft();\n  }\n}\n\nvoid setup() {\n  forward(1);\n  findGap();\n  forward(3);\n  findGap();\n  forward(3);\n  int dx = 3 - x;\n  if (dx > 0) {\n    turnRight();\n    forward(dx);\n  }\n  if (dx < 0) {\n    turnLeft();\n    forward(-dx);\n  }\n}\n\nvoid loop() {\n}\n"
+}

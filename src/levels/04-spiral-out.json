@@ -1,0 +1,26 @@
+{
+  "id": 4,
+  "title": "Spiral out",
+  "concept": "for loops",
+  "instructions": "A for loop repeats its { } a set number of times, and its counter i can be used like any variable. Visit the circles in order and stop on the X using only 2 commands.",
+  "starterCode": "#include \"Rover.h\"\n\nvoid setup() {\n  // for (start; keep going while; after each time) { ... }\n  // i starts at 1, goes up by 1 (i++) each time, and stops after 4.\n  for (int i = 1; i <= 4; i++) {\n    forward(2);\n    turnRight();\n  }\n}\n\nvoid loop() {\n}\n",
+  "grid": { "w": 11, "h": 9 },
+  "variants": [
+    {
+      "start": { "x": 5, "y": 3, "dir": "N" },
+      "goal": { "x": 1, "y": 7 },
+      "walls": [
+        [0, 0], [10, 0],
+        [10, 1],
+        [7, 4],
+        [3, 5],
+        [0, 8], [10, 8]
+      ],
+      "checkpoints": [{ "x": 5, "y": 1 }, { "x": 9, "y": 1 }, { "x": 9, "y": 7 }]
+    }
+  ],
+  "maxCommands": 2,
+  "requires": ["for"],
+  "hint": "The sides are 2, 4, 6, and 8 cells long. You can do math inside the ( ): + - * / work like in math class (* means times), and a - in front flips the sign, like -x. So i * 2 is 2, 4, 6, 8 as i goes 1, 2, 3, 4.",
+  "solution": "#include \"Rover.h\"\n\nvoid setup() {\n  for (int i = 1; i <= 4; i++) {\n    forward(i * 2);\n    turnRight();\n  }\n}\n\nvoid loop() {\n}\n"
+}
