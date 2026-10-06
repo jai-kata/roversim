@@ -102,7 +102,7 @@ RoverSim tells you what to fix in plain English and marks the line in red:
 - `Crashed into a wall on line 6.`
 
 A few things are different on the real rover. They're listed in
-[bugs.txt](public/bugs.txt).
+[bugs.txt](bugs.txt).
 
 ## For club officers
 
@@ -119,6 +119,7 @@ npm run try -- examples/square.ino   # run a sketch without the browser
   `solution`, and `npm test` checks that it passes every version of the map.
 - Every push to `main` runs the tests and, if they pass, updates the
   website through GitHub Pages.
-- What's new is in [changelog.txt](public/changelog.txt).
+- What's new is in [changelog.txt](changelog.txt). Neither it nor
+  bugs.txt is published on the website.
 
 Made by BYTE Club officers at PNHS. Found a bug? Tell an officer.

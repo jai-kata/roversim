@@ -1,5 +1,4 @@
 import './style.css';
-import bugsText from '../public/bugs.txt?raw';
 import { createEditor } from './editor';
 import type { Program, RunResult } from './lang';
 import { analyze, loopIsEmpty, missingRequirements, type Requirement } from './lang/analysis';
@@ -24,10 +23,6 @@ const buttons = {
 };
 const speedInput = $<HTMLInputElement>('speed');
 const speedOut = $<HTMLOutputElement>('speed-out');
-
-// Keep the footer count honest: it's the number of entries in bugs.txt.
-const bugCount = bugsText.split('\n').filter((l) => l.startsWith('- ')).length;
-$('bugs-link').textContent = `Known bugs (${bugCount})`;
 
 const REQUIREMENT_MESSAGES: Record<Requirement, string> = {
   variable: 'Made it, but this level wants you to use a variable, like int legs = 2; and then forward(legs);',
